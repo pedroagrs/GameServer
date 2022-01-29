@@ -11,4 +11,6 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     @Transactional
     Long deleteByName(String name);
 
+    Player getPlayerByName(String name);
+
 }

@@ -23,4 +23,14 @@ public class Player {
     @Column(nullable = false, unique = true, updatable = false, length = 16, columnDefinition = "get the player name")
     private final String name;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Player player = (Player) o;
+
+        return name != null && name.equalsIgnoreCase(player.getName());
+    }
+
 }

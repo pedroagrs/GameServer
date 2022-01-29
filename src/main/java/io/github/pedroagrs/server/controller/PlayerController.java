@@ -14,26 +14,42 @@ import java.util.List;
 @RequiredArgsConstructor(
         access = AccessLevel.PRIVATE
 )
-@RequestMapping("/api/players")
+@RequestMapping("/api/players/")
 public class PlayerController {
 
     private final PlayerRepository playerRepository;
 
-    @GetMapping("/get")
+    @GetMapping
     List<Player> getPlayers() {
         return playerRepository.findAll();
     }
 
-    @PostMapping("/post")
-    @ResponseStatus(HttpStatus.CREATED)
-    void createPlayer(@RequestBody Player player) {
-        playerRepository.save(player);
+    @PostMapping
+    Player createPlayer(@RequestBody Player data) {
+        if (!getPlayers().contains(data))
+            return playerRepository.save(data);
+        else
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Player already exists.");
     }
 
-    @DeleteMapping("/delete/{name}")
+    // Singleton
+
+    @GetMapping("{name}")
+    Player getPlayer(@PathVariable String name) {
+        final Player player = playerRepository.getPlayerByName(name);
+
+        if (player == null) throwsPlayerNotFound();
+
+        return player;
+    }
+
+    @DeleteMapping("{name}")
     void deletePlayer(@PathVariable String name) {
-        if (playerRepository.deleteByName(name) == 0)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found!");
+        if (playerRepository.deleteByName(name) == 0) throwsPlayerNotFound();
+    }
+
+    private void throwsPlayerNotFound() {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found.");
     }
 
 }
