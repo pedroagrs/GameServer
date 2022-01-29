@@ -2,23 +2,38 @@ package io.github.pedroagrs.server.controller;
 
 import io.github.pedroagrs.server.model.Player;
 import io.github.pedroagrs.server.repository.PlayerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/players")
+@RequiredArgsConstructor(
+        access = AccessLevel.PRIVATE
+)
+@RequestMapping("/api/players")
 public class PlayerController {
 
-    @Autowired
-    private PlayerRepository playerRepository;
+    private final PlayerRepository playerRepository;
 
-    @GetMapping
-    public List<Player> getPlayers() {
+    @GetMapping("/get")
+    List<Player> getPlayers() {
         return playerRepository.findAll();
+    }
+
+    @PostMapping("/post")
+    @ResponseStatus(HttpStatus.CREATED)
+    void createPlayer(@RequestBody Player player) {
+        playerRepository.save(player);
+    }
+
+    @DeleteMapping("/delete/{name}")
+    void deletePlayer(@PathVariable String name) {
+        if (playerRepository.deleteByName(name) == 0)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found!");
     }
 
 }

@@ -4,3 +4,5 @@ CREATE TABLE IF NOT EXISTS player
     name VARCHAR(16) NOT NULL,
     PRIMARY KEY (id)
 );
+
+TRUNCATE TABLE player; # clear datas
