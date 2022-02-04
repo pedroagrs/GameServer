@@ -11,9 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor(
-        access = AccessLevel.PRIVATE
-)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @RequestMapping("/api/players/")
 public class PlayerController {
 
